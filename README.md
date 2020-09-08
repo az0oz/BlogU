@@ -3,11 +3,11 @@ A two day very simple demonstrational CRUD blog with Nodejs, express, Mongo and 
 
 ## Configure .env:
 
-DB_HOST=<localhost>
-ADMIN_EMAIL=<admin email>
-ADMIN_PASSWORD=<plain admin password>
-DB_NAME=<admin db name>
-DB_CONNECTION=<mongo db connection link>
+DB_HOST=/localhost/
+ADMIN_EMAIL=/admin email/
+ADMIN_PASSWORD=/plain admin password/
+DB_NAME=/admin db name/
+DB_CONNECTION=/mongo db connection link/
 
 # install 
 
