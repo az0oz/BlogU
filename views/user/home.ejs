@@ -1,0 +1,114 @@
+<!--::header part start::-->
+<%- include('./header.ejs') %>
+<!-- header part end-->
+<!-- Navigation start -->
+<%- include('./navbar.ejs') %>
+<!-- Navigation end -->
+<!-- Page Content -->
+<div class="container">
+  <div class="row">
+    <!-- Blog Entries Column -->
+    <div class="col-md-8">
+      <h1 class="my-4">Posts :
+        <small>User Posts</small>
+      </h1>
+      
+      <!-- Blog Post -->
+      <div id="posts">
+        <% if(posts.docs){ posts.docs.forEach((post) => { %>
+        <div class="card mb-4">
+          <img class="card-img-top home-post-images" src="<%=post.image%>" alt="<%=post.image.split('/')[2]%>">
+          <div class="card-body">
+            <h2 class="card-title"><%=post.title%></h2>
+            <p class="card-text" id="post-content"><%=post.content%></p>
+            <a href="/posts/<%=post._id%>" class="btn btn-primary">Read More &rarr;</a>
+          </div>
+          <div class="card-footer text-muted">
+            Posted on <%=moment(post.date).format( 'YYYY-MM-DD')%> by
+            <a href="#">Admin</a>
+          </div>
+        </div>
+        <% }) %>
+        <% } %>
+      </div>
+      <!-- Pagination -->
+      <ul class="pagination justify-content-center mb-4">
+        <% if(posts.page == posts.pages ) {%>
+        <li class="page-item disabled">
+          <form id="nextForm" action="/home/page/<%=parseInt(posts.page)+1%>" method="get">
+              <button type="submit" class="page-link" id="nextPage">&larr; Older</button>
+            </form>
+          </li>
+          <% } else{%>
+            <li class="page-item">
+              <form id="nextForm" action="/home/page/<%=parseInt(posts.page)+1%>" method="get">
+                  <button type="submit" class="page-link" id="nextPage">&larr; Older</button>
+                </form>
+              </li>
+              <% } %>
+        <% if(posts.page <= posts.pages && posts.page != 1) {%>
+        <li class="page-item">
+          <form id="prevForm" action="/home/page/<%=parseInt(posts.page)-1%> "method="get">
+             <button type="submit"  class="page-link" id="previousPage">Newer &rarr;</button>
+          </form>
+        </li>
+        <% } else { %>
+          <li class="page-item disabled">
+            <form id="prevForm" action="/home/page/<%=parseInt(posts.page)-1%> "method="get">
+               <button type="submit"  class="page-link" id="previousPage">Newer &rarr;</button>
+            </form>
+          </li>
+          <% } %>
+      </ul>
+      
+    </div>
+    
+    <div class="col-md-4">
+
+     <!-- Sidebar Widgets Column -->
+     <%- include('./search.ejs') %>
+
+      <!-- Categories Widget -->
+      <%- include('./categories.ejs') %>
+
+    </div>
+
+  </div>
+  <!-- /.row -->  
+  </div>
+  <!-- /.container -->
+</div>
+
+<!-- Footer start -->
+<%- include('./footer.ejs') %>
+<!-- Footer end -->
+<!-- Bootstrap core JavaScript -->
+
+<script>
+
+  let socket = io();
+  socket.on('new_post', function(formDataValues) {
+
+    let post = "";
+    
+    post += '<div class="card mb-4">';
+    post += '<img class="card-img-top home-post-images" src="' + formDataValues.imagePath + '"' + ' alt =" ' + formDataValues.imagePath.split("/")[2] + '"' +  ' > ';
+    post += '<div class="card-body">';
+    post += '<h2 class="card-title">' + formDataValues.title + '</h2>';
+    post += '<p class="card-text" id="post-content">' + formDataValues.content + '</p>';
+    post +=  '<a href="/posts/'+ formDataValues._id + '"class="btn btn-primary"> Read More &rarr;</a>';
+    post += '</div>';
+    post += '<div class="card-footer text-muted"> Posted on ' + formDataValues.date + ' by';
+    post += '<a href="#"> Admin</a>';
+    post += '</div>';
+    post += '</div>';
+    
+    $('#posts').append(post);
+
+  })
+
+
+  
+    
+
+</script>

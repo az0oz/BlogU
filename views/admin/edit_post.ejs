@@ -1,0 +1,112 @@
+  <!--::header part start::-->
+  <%- include('./header.ejs') %>
+  <!-- Header part end-->
+  
+  <!-- Posts form begin-->
+  <div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid">
+            <!-- Feedback Modal Message -->
+            <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div id="feedback_content" class="modal-body text-center">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h1 class="mt-4">Edit Post</h1>
+            <div class="row">
+                <div class="col-xl-12"> 
+                    <form method="POST" enctype="multipart/form-data" id="form">
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input name="title" type="text" value="<%=post.title%>" class="form-control" id="title">
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label for="file">Image</label>
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" value="http://localhost:3000/<%=post.image%>" id="image" name="image">
+                                <label class="custom-file-label" for="image"><%=post.image.split("/")[2]%></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select name="category" id="category" class="custom-select" >
+                                <option value="Technology" class="dropdown-item" <% if (post.category === "Technology"){%> Selected  <% } %> >Technology</option>
+                                <option value="Fashion" class="dropdown-item" <% if (post.category === "Fashion"){%> Selected  <% } %> >Fashion</option>
+                                <option value="Food" class="dropdown-item" <% if (post.category === "Food"){%> Selected  <% } %> >Food</option>
+                                <option value="Music" class="dropdown-item" <% if (post.category === "Music"){%> Selected  <% } %> >Music</option>
+                                <option value="Travel" class="dropdown-item" <% if (post.category === "Travel"){%> Selected  <% } %> >Travel</option>
+                                <option value="Lifestyle" class="dropdown-item" <% if (post.category ==="Lifestyle"){%> Selected  <% } %> >Lifestyle</option>
+                                <option value="Fitness" class="dropdown-item" <% if (post.category === "Fitness"){%> Selected  <% } %> >Fitness</option>
+                                <option value="DIY" class="dropdown-item" <% if (post.category === "DIY"){%> Selected  <% } %> >DIY</option>
+                                <option value="Sports" class="dropdown-item" <% if (post.category === "Sports"){%> Selected  <% } %> >Sports</option>
+                                <option value="Politics" class="dropdown-item" <% if (post.category ==="Politics"){%> Selected  <% } %> >Politics</option>
+                                <option value="Parenting" class="dropdown-item" <% if (post.category === "Parenting"){%> Selected  <% } %> >Parenting</option>
+                                <option value="Business" class="dropdown-item" <% if (post.category === "Business"){%> Selected  <% } %> >Business</option>
+                                <option value="Personal" class="dropdown-item" <% if (post.category === "Personal"){%> Selected  <% } %> >Personal</option>
+                                <option value="Movies" class="dropdown-item" <% if (post.category === "Movies"){%> Selected  <% } %> >Movies</option>
+                                <option value="News" class="dropdown-item" <% if (post.category === "News"){%> Selected  <% } %> >News</option>
+                                <option value="Pets" class="dropdown-item" <% if (post.category === "Pets"){%> Selected  <% } %> >Pets </option>
+                                <option value="Gaming" class="dropdown-item" <% if (post.category ==="Gaming"){%> Selected  <% } %> >Gaming</option>
+                                <option value="Other" class="dropdown-item" <% if (post.category === "Other"){%> Selected  <% } %> >Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="content">Content</label>
+                            <textarea name="content" id="content" rows="25" class="form-control"><%=post.content%></textarea>
+                        </div>
+                        <input type="submit" id="submit" class="btn btn-primary" value="Submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!--::Footer part start::-->
+    <%- include('./footer.ejs') %>
+    <!-- Footer part end-->      
+</div>
+<script>
+    $("#form").on("submit", function (e) { 
+        e.preventDefault();
+        $.ajax({
+            method: "POST",
+            url: "/admin/post/<%=post._id%>/edit",
+            contentType: false,
+            processData: false,
+            data: new FormData(this),
+            success: function (response) {
+                if(response.error){
+                    $("#feedback_content").append("<i class='fas fa-times fa-3x m-3'></i>");
+                    $("#feedback_content").append("<h5>"+response.error+"</h5>");
+                }
+                else {
+                    $("#feedback_content").append("<i class='fas fa-check fa-3x m-3'></i>");
+                    $("#feedback_content").append("<h5>"+response+"</h5>");
+                    setTimeout(() => {
+                        window.location.replace("/home");
+                    }, 1200);
+                }
+                $("#feedbackModal").modal('show');
+                
+                
+            },
+            error: function (jqXHR, textStatus, errorThrown ){
+            }
+        });
+        $("#feedback_content").html("");
+    });
+    
+</script>
+</body>
+</html>
+
+
+<!-- Posts form end-->
+

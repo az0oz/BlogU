@@ -1,0 +1,69 @@
+<!--::header part start::-->
+<%- include('./header.ejs') %>
+<!-- header part end-->
+<!-- Navigation start -->
+<%- include('./navbar.ejs') %>
+<!-- Navigation end -->
+<!-- Page Content -->
+<div class="container">
+  <div class="row">
+    <!-- Blog Entries Column -->
+    <div class="col-md-8">
+      <h1 class="my-4">Searched Posts By :
+        <small><%=searchedPhrase%></small>
+      </h1>
+      
+      <!-- Blog Post -->
+      <div id="posts">
+        <% if(posts) {posts.forEach((post) => { %>
+        <div class="card mb-4">
+          <img class="card-img-top home-post-images" src="<%=post.image%>" alt="<%=post.image.split('/')[2]%>">
+          <div class="card-body">
+            <h2 class="card-title"><%=post.title%></h2>
+            <p class="card-text" id="post-content"><%=post.content%></p>
+            <a href="/posts/<%=post._id%>" class="btn btn-primary">Read More &rarr;</a>
+          </div>
+          <div class="card-footer text-muted">
+            Posted on <%=moment(post.date).format( 'YYYY-MM-DD')%> by
+            <a href="#">Admin</a>
+          </div>
+        </div>
+        <% }) %>
+        <% } else { %>
+          <h1> Page Not Found </h1>
+        <% } %>
+      </div>
+      <!-- Pagination -->
+      <ul class="pagination justify-content-center mb-4">
+        <li class="page-item">
+          <a class="page-link" href="#">&larr; Older</a>
+        </li>
+        <li class="page-item disabled">
+          <a class="page-link" href="#">Newer &rarr;</a>
+        </li>
+      </ul>
+      
+    </div>
+    
+    <div class="col-md-4">
+
+        <!-- Sidebar Widgets Column -->
+        <%- include('./search.ejs') %>
+   
+         <!-- Categories Widget -->
+         <%- include('./categories.ejs') %>
+   
+    </div>
+  
+  </div>
+  <!-- /.row -->  
+ </div>
+  <!-- /.container -->
+</div>  
+<!-- Footer start -->
+<%- include('./footer.ejs') %>
+<!-- Footer end -->
+<!-- Bootstrap core JavaScript -->
+
+<script>
+</script>

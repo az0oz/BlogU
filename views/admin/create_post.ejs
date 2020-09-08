@@ -1,0 +1,128 @@
+  <!--::header part start::-->
+  <%- include('./header.ejs') %>
+  <!-- Header part end-->
+  
+  <!-- Posts form begin-->
+  <div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid">
+            <!-- Feedback Modal Message -->
+            <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div id="feedback_content" class="modal-body text-center">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h1 class="mt-4">Create Post</h1>
+            <div class="row">
+                <div class="col-xl-12"> 
+                    <form method="POST" enctype="multipart/form-data" id="form">
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input name="title" type="text" class="form-control" id="title">
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <label for="file">Image</label>
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="image" name="image">
+                                <label class="custom-file-label" for="image">Choose file</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select name="category" id="category" class="custom-select" >
+                                <option value="none" class="dropdown-item" selected disabled hidden>Select Category</option>
+                                <option value="Technology" class="dropdown-item">Technology</option>
+                                <option value="Fashion" class="dropdown-item">Fashion</option>
+                                <option value="Food" class="dropdown-item">Food</option>
+                                <option value="Music" class="dropdown-item">Music</option>
+                                <option value="Travel" class="dropdown-item">Travel</option>
+                                <option value="Lifestyle" class="dropdown-item">Lifestyle</option>
+                                <option value="Fitness" class="dropdown-item">Fitness</option>
+                                <option value="DIY" class="dropdown-item">DIY</option>
+                                <option value="Sports" class="dropdown-item">Sports</option>
+                                <option value="Politics" class="dropdown-item">Politics</option>
+                                <option value="Parenting" class="dropdown-item">Parenting</option>
+                                <option value="Business" class="dropdown-item">Business</option>
+                                <option value="Personal" class="dropdown-item">Personal</option>
+                                <option value="Movies" class="dropdown-item">Movies</option>
+                                <option value="News" class="dropdown-item">News</option>
+                                <option value="Pets" class="dropdown-item">Pets </option>
+                                <option value="Gaming" class="dropdown-item">Gaming</option>
+                                <option value="Other" class="dropdown-item">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="content">Content</label>
+                            <textarea name="content" id="content" rows="10" class="form-control"></textarea>
+                        </div>
+                        <input type="submit" id="submit" class="my-2 btn btn-primary" value="Submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!--::Footer part start::-->
+    <%- include('./footer.ejs') %>
+    <!-- Footer part end-->      
+</div>
+<script>
+    $("#form").on("submit", function (e) { 
+        e.preventDefault();
+        let formData = new FormData(this);
+        $.ajax({
+            method: "POST",
+            url: "/admin/post",
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function (response) {
+                if(response.error){
+                    $("#feedback_content").append("<i class='fas fa-times fa-3x m-3'></i>");
+                    $("#feedback_content").append("<h5>"+ response.error +"</h5>");
+                }
+                else {
+                    formData.append('_id', response._id);
+                    formData.append('imagePath', response.imagePath);
+                    console.log(formData.get("_id"));
+                    let socket = io();
+                    let formDataValues = {
+                        _id: formData.get('_id'),
+                        title: formData.get('title'),
+                        content: formData.get('content'),
+                        category: formData.get('category'),
+                        imagePath: formData.get('imagePath'),
+                        date: new Date().toJSON().slice(0,10).replace(/-/g,'-')
+                    }
+                    console.log(formDataValues);
+                    socket.emit("new_post", formDataValues); 
+                    $("#feedback_content").append("<i class='fas fa-check fa-3x m-3'></i>");
+                    $("#feedback_content").append("<h5>"+response.success+"</h5>");
+                   // setTimeout(() => {
+                      //  window.location.replace("/home");
+                    //}, 1200);
+                }
+                $("#feedbackModal").modal('show');
+                
+                
+            },
+            error: function (jqXHR, textStatus, errorThrown ){
+            }
+        });
+        $("#feedback_content").html("");
+    });
+    
+</script>
+</body>
+</html>
+
+
+<!-- Posts form end-->
+

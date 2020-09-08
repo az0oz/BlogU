@@ -1,0 +1,13 @@
+<%if(post.comments){%>
+    <%post.comments.forEach((userComment) => {%>
+        <div class="media mb-4">
+            <span class="d-flex mr-3 rounded-circle">
+                <i class='fas fa-user-circle fa-3x'></i>
+            </span>
+            <div class="media-body">
+            <h5 class="mt-0"><%=userComment.username%></h5>
+            <%=userComment.comment%>
+            </div>
+        </div>
+     <% }) %>
+  <% } %>

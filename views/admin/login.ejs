@@ -1,0 +1,77 @@
+  <!--::header part start::-->
+  <%- include('./header_with_no_navbar.ejs') %>
+  <!-- Header part end-->
+  <div id="layoutSidenav_content">
+    <!-- Feedback Modal Message -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div id="feedback_content" class="modal-body text-center">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <main>
+        <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
+                            <div class="card-body">
+                                <form name="admin_form" id="admin_form">
+                                    <div class="form-group"><label class="small mb-1" for="email">Email</label><input class="form-control py-4" id="email" type="email" placeholder="Enter email address" /></div>
+                                    <div class="form-group"><label class="small mb-1" for="password">Password</label><input class="form-control py-4" id="password" type="password" placeholder="Enter password" /></div>
+                                    <div class="form-group">
+                                    </div>
+                                    <div class="form-group d-flex flex-row-reverse mt-4 mb-0"><button type="submit" class="btn btn-primary">Login</button></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="loader-wrapper">
+            <span class="loader"></span>
+        </div>
+    </main>
+</div>
+<script>
+    $(window).on("load", function(){
+        $('.loader-wrapper').fadeOut();
+    })
+    $("#admin_form").on("submit", function (e) { 
+        e.preventDefault();
+        $('.loader-wrapper').fadeIn();
+        $.ajax({
+            method: "POST",
+            url: "login",
+            data: {email:$('#email').val(), password:$('#password').val()},
+            success: function (response) {
+                $('.loader-wrapper').fadeOut();
+                if(response.error){
+                    $("#feedback_content").append("<i class='fas fa-times fa-3x m-3'></i>");
+                    $("#feedback_content").append("<h5>"+response.error+"</h5>");
+                }
+                else {
+                    $('.loader-wrapper').fadeOut();
+                    $("#feedback_content").append("<i class='fas fa-check fa-3x m-3'></i>");
+                    $("#feedback_content").append("<h5>Logged in successfully</h5>");
+                    setTimeout(() => {
+                        window.location.replace("dashboard");
+                    }, 1200);
+                }
+                $("#feedbackModal").modal('show');
+                
+                
+            },
+            error: function (jqXHR, textStatus, errorThrown ){
+            }
+        });
+        $("#feedback_content").html("");
+    });
+</script>
+</body>
+</html>

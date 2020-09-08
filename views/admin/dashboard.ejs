@@ -1,0 +1,119 @@
+<!--::header part start::-->
+<%- include('./header.ejs') %>
+<!-- Header part end-->
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid">
+                        <h1 class="mt-4">Dashboard</h1>
+                        <div class="row">     
+                            <div class="modal" tabindex="-1" role="dialog" id="confirm-delete"  aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title">Post Delete</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <p>You are about to delete post : <span id="deleted-post-title"></span> </p>
+                                       <p>This procedure is irreversible, Do you want to proceed?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-danger">Delete</button>
+                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            <div class="col-xl-4 col-md-12">
+                                <div class="card bg-danger text-white mb-4 text-center">
+                                    <div class="card-body ">Total Number Of Posts</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link " href="#"><%=numberOfPosts%></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-md-12">
+                                <div class="card bg-secondary text-white mb-4 text-center">
+                                    <div class="card-body ">Total Number Of Engagements</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link " href="#"><%=numberOfComments%></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-md-12">
+                                <div class="card bg-success text-white mb-4 text-center">
+                                    <div class="card-body ">Post With Highest Engagements</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link " href="#"><%=highestPostWithComments.title%> : <%=highestPostWithComments.count%></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-md-12">
+                                <div class="card bg-primary text-white text-center mb-4 p-4">
+                                    <a type="button" href="/admin/post/" > <div class="card-body"> <i class="far fa-plus-square fa-3x"></i> <span class="m-2 display-4" id="create-post">Create Post</span></div></a> 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <div class="card-header"><i class="fas fa-table mr-1"></i>Posts Management</div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="posts" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>Post Title</th>
+                                                <th>Published Date</th>
+                                                <th>Category</th>
+                                                <th>Edit</th>
+                                                <th>Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <%posts.forEach((post) => {%>
+                                                <tr>
+                                                    <td class="post-title"><%=post.title%></td>
+                                                    <td><%=moment(post.date).format( 'YYYY-MM-DD')%></td>
+                                                    <td><%=post.category%></td>
+                                                    <td>
+                                                        <form action="/admin/post/<%=post._id%>/edit" method="get">
+                                                            <button class="btn btn-primary" type="submit"><i class="fas fa-edit"></i></button>
+                                                        </form>
+                                                    </td>
+                                                    <td>
+                                                        <form class="delete-form d-flex justify-content-center align-items-center" action="/admin/post/<%=post._id%>" method="post"></form>
+                                                            <button class="btn btn-danger launch-delete-modal" type="button"><i class="fas fa-trash-alt"></i></button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            <%})%>
+                                       
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <!--::Footer part start::-->
+               <%- include('./footer.ejs') %>
+               <!-- Footer part end-->      
+            </div>
+            <script>
+                $(".launch-delete-modal").each(function (index, element) {
+                    $(this).on("click", function (e) { 
+                        e.preventDefault();
+                        let deletingModalLaunchButton = $(this);
+                        $('#deleted-post-title').html("<b>"+$(this).parent().parent().find('.post-title').text()+"</b>");
+                        $('#confirm-delete').modal('show');
+                        $('#confirm-delete').find(".btn-danger").on("click", function (e){     
+                            deletingModalLaunchButton.parent().find(".delete-form").submit();
+                        })
+                })
+
+
+          
+            
+            });
+            </script>
