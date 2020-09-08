@@ -1,5 +1,5 @@
 # BlogU
-A two day very simple demonstrational CRUD blog with Nodejs, express, Mongo and sockets.
+First node project done in two days of a very simple demonstrational CRUD blog with Nodejs, express, Mongo and sockets.
 
 ## Configure .env:
 
